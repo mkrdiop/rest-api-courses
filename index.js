@@ -1,3 +1,5 @@
+const startDebugger = require('debug')('app:startup')
+const config = require('config')
 const helmet = require('helmet')
 const morgan = require('morgan')
 const Joi = require('joi');
@@ -24,9 +26,20 @@ app.use(logger);
 
 app.use(helmet());
 
+
+//dealing with configuration file from the module config
+startDebugger('Application Name :' + config.get('name'))
+startDebugger('Mail Server:' + config.get('mail.host'))
+//console.log('Mail Password :' + config.get('mail.password'))
+
 // loading morgan third party middleware which is for logging requests
 // the param tiny show few details about the request see other params in doc
-app.use(morgan('tiny'));
+
+if (app.get('env')==='development') {
+    app.use(morgan('tiny'));
+    startDebugger('morgan enabled')
+}
+
 
 const courses = [
     {id:1, name:'course 1'},
