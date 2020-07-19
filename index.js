@@ -1,8 +1,23 @@
 const Joi = require('joi');
 const express = require('express');
 const app = express();
+const logger = require('./logger')
+const authenticate = require('./authenticate')
+
+
 
 app.use(express.json())
+
+// use of express.urlencoded() only is deprecated in this version of express
+// see https://stackoverflow.com/questions/25471856/express-throws-error-as-body-parser-deprecated-undefined-extended
+// for more clientInformation.
+
+app.use(express.urlencoded({ extended: true }))
+//middleware for serving static files
+app.use(express.static('public'));
+app.use(authenticate);
+app.use(logger);
+
 const courses = [
     {id:1, name:'course 1'},
     {id:2, name:'course 2'},
@@ -34,7 +49,6 @@ app.post('/api/courses', (req, res) => {
 
     if (error) return res.status(400).send(error.details[0].message);
     
-
     const course = {
         id: courses.length + 1,
         name: req.body.name
