@@ -1,3 +1,5 @@
+const helmet = require('helmet')
+const morgan = require('morgan')
 const Joi = require('joi');
 const express = require('express');
 const app = express();
@@ -17,6 +19,14 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'));
 app.use(authenticate);
 app.use(logger);
+
+// loading helmet third party middleware which is for sercure http
+
+app.use(helmet());
+
+// loading morgan third party middleware which is for logging requests
+// the param tiny show few details about the request see other params in doc
+app.use(morgan('tiny'));
 
 const courses = [
     {id:1, name:'course 1'},
